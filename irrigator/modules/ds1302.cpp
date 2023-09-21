@@ -11,7 +11,7 @@ year (year), month (month), date (date), hours (hs), minutes (min), seconds (sec
 }
 
 bool Datetime::operator< (Datetime &right) {
-	return this->year < right.year | this->month < right.month | this->day < right.day | this->hours < right.hours | this->minutes < right.minutes | this->seconds < right.seconds;
+	return this->year < right.year || this->month < right.month || this->day < right.day || this->hours < right.hours || this->minutes < right.minutes || this->seconds < right.seconds;
 }
 
 void DS1302::writeRawByte (byte b) {
