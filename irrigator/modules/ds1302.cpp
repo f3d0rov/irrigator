@@ -33,8 +33,8 @@ void DS1302::writeByte (byte reg, byte data) {
 
 	_delay_us (DS1302_T_CC_us); // Timings provided by DS1302 datasheet
 	byte writeReg = (reg | (1 << 7)) & ~((byte) 1); // Bit 7 is set to enable writes to the DS1302; bit 0 is reset to specify a write operation
-	writeRawByte (writeReg); 
-	writeRawByte (data);
+	writeRawByte (writeReg); // Write command byte
+	writeRawByte (data);	// Write data
 
 	_delay_us (DS1302_T_CCH_ns / 1000); // CLK to RST hold delay
 	digitalWrite (this->_rst, LOW); // RST to LOW

@@ -48,11 +48,12 @@ struct Datetime {
 	bool operator< (Datetime &right);
 };
 
+// DS1302 Serial clock module communication class.
 class DS1302 {
 		int _clk, _dat, _rst;
 		bool _running;
 
-		void writeRawByte (byte b);
+		void writeRawByte (byte b); // Write a byte to a pin. RST pin assumed HIGH
 		void writeByte (byte reg, byte data); // Write a byte to a register
 		byte readByte (byte reg); // Read a byte from a register
 
@@ -64,7 +65,7 @@ class DS1302 {
 
 		// Converters for DS1302 binary coded decimal format
 
-		static byte getBits (byte from, int first, int last);
+		static byte getBits (byte from, int first, int last); // Get bits in positions [first, last] (including both ends)
 
 		static int convert60Base (byte from);
 		static int convertHours (byte from);
