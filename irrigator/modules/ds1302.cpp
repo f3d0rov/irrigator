@@ -177,8 +177,6 @@ void DS1302::setupDatetime (Datetime dt) {
 	this->writeByte (DS1302_REG_MINUTES, DS1302::convertToMinutes (dt.minutes));
 	this->writeByte (DS1302_REG_HOURS, DS1302::convertToHours (dt.hours)); 
 	this->writeByte (DS1302_REG_DATE, DS1302::convertToDate (dt.date));
-	Serial.print("0b");
-	Serial.println(DS1302::convertToDate (dt.date), BIN);
 	this->writeByte (DS1302_REG_MONTH, DS1302::convertToMonth (dt.month));
 	this->writeByte (DS1302_REG_YEAR, DS1302::convertToYear (dt.year));
 	// DS1302 should figure day of the week on its own
