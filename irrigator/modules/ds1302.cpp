@@ -10,8 +10,63 @@ year (year), month (month), date (date), hours (hs), minutes (min), seconds (sec
 
 }
 
+Datetime::Datetime (long unix) {
+    long z = unix / 86400 + 719468;
+    long era = (z >= 0 ? z : z - 146096) / 146097;
+    unsigned long doe = static_cast<unsigned long>(z - era * 146097);
+    unsigned long yoe = (doe - doe/1460 + doe/36524 - doe/146096) / 365;
+    this->year = static_cast<long>(yoe) + era * 400;
+    unsigned long doy = doe - (365*yoe + yoe/4 - yoe/100);
+    unsigned long mp = (5*doy + 2)/153;
+    this->date = doy - (153*mp+2)/5 + 1;
+    this->month = mp + (mp < 10 ? 3 : -9);
+    this->year += (this->month <= 2);
+
+	long daily = unix % (24L * 60 * 60);
+	this->hours = daily / 3600L;
+	daily %= 3600;
+	this->minutes = daily / 60;
+	this->seconds = daily % 60;
+}
+
+
+String Datetime::dateString() {
+	return String (this->date) + "." + String (this->month) + "." + String (this->year);
+}
+
+String Datetime::timeString() {
+	return String (this->hours) + ":" + String (this->minutes) + ":" + String (this->seconds);
+}
+
+String Datetime::toString() {
+	return this->dateString() + " " + this->timeString();
+}
+
+bool Datetime::isLeapYear (int y) {
+	// Works for years [2000, 2100]
+	return y % 4 == 0 && y != 2100;
+}
+
+long Datetime::unix () {
+	const int daysOverMonths[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+	const long jan1_2000 = 946684800L;
+	const long perDay = 24L * 60 * 60;
+	long daily = (long) this->seconds + this->minutes * 60L + this->hours * 60L * 60L;
+	long yearly = (((long) this->date - 1) + daysOverMonths[this->month - 1] + ((Datetime::isLeapYear(this->year) && month > 2) ? (this->month - 2) : 0)) * perDay;
+	long allYears = jan1_2000 + ((year - 2000) * 365 + (year - 2000 + 3) / 4) * perDay;
+	return allYears + yearly + daily;
+}
+
 bool Datetime::operator< (Datetime &right) {
 	return this->year < right.year || this->month < right.month || this->day < right.day || this->hours < right.hours || this->minutes < right.minutes || this->seconds < right.seconds;
+}
+
+Datetime Datetime::operator+ (long seconds) {
+	return Datetime (this->unix() + seconds);
+}
+
+Datetime Datetime::operator- (long seconds) {
+	return Datetime (this->unix() - seconds);
 }
 
 void DS1302::writeRawByte (byte b) {

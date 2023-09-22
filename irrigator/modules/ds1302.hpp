@@ -44,8 +44,18 @@ struct Datetime {
 
 	Datetime();
 	Datetime (int year, int month, int date, int hs, int min, int sec);
+	Datetime (long unix);
+
+	String dateString();
+	String timeString();
+	String toString();
+	
+	static bool isLeapYear (int y);
+	long unix();
 
 	bool operator< (Datetime &right);
+	Datetime operator+ (long seconds);
+	Datetime operator- (long seconds);
 };
 
 // DS1302 Serial clock module communication class.
